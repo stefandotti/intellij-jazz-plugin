@@ -1,0 +1,1 @@
+# intellij-jazz-plugin
