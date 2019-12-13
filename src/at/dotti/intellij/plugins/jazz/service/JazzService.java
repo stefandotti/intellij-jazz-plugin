@@ -1,7 +1,9 @@
 package at.dotti.intellij.plugins.jazz.service;
 
 import at.dotti.intellij.plugins.jazz.beans.JazzProjectArea;
+import at.dotti.intellij.plugins.jazz.beans.JazzProjectAreaList;
 import at.dotti.intellij.plugins.jazz.exceptions.JazzServiceException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -15,6 +17,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,11 +59,19 @@ public class JazzService {
         return INSTANCE;
     }
 
-    private JazzService() {}
+    private JazzService() {
+    }
 
-    public List<JazzProjectArea> listProjectAreas() throws JazzServiceException {
+    public JazzProjectAreaList listProjectAreas() throws JazzServiceException {
         String json = JazzServiceExecutor.getInstance().execute("list", "projectareas");
-
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JazzProjectArea[] list = mapper.readValue(json, JazzProjectArea[].class);
+            JazzProjectAreaList jazzProjectAreaList = new JazzProjectAreaList();
+            jazzProjectAreaList.setProjectAreas(Arrays.asList(list));
+            return jazzProjectAreaList;
+        } catch (IOException e) {
+            throw new JazzServiceException(e);
+        }
     }
 }
