@@ -1,0 +1,71 @@
+plugins {
+    id 'org.jetbrains.intellij' version '0.4.10'
+}
+
+apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaTargetVersion
+
+group pluginGroup
+version = pluginVersion
+
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+sourceSets {
+    main {
+        java.srcDirs 'src'
+        resources.srcDir 'resources'
+    }
+}
+
+intellij {
+    version System.getenv().getOrDefault('IDEA_VERSION', ideaVersion)
+    type ideaType
+    pluginName pluginName
+    downloadSources Boolean.valueOf(sources)
+    sameSinceUntilBuild Boolean.valueOf(isEAP)
+    alternativeIdePath idePath
+    patchPluginXml {
+        sinceBuild pluginSinceBuild
+        untilBuild pluginUntilBuild
+    }
+
+    publishPlugin {
+        username publishUsername
+        token publishToken
+        channels publishChannel
+    }
+}
+
+idea {
+    project {
+        jdkName         = javaVersion
+        languageLevel   = javaVersion
+    }
+}
+
+// Configurations
+
+configurations {
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://dl.bintray.com/jetbrains/intellij-plugin-service' }
+}
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.9'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.9'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.9.6'
+}
+
