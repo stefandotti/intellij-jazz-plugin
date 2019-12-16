@@ -1,5 +1,6 @@
 package at.dotti.intellij.plugins.jazz.settings;
 
+import at.dotti.intellij.plugins.jazz.beans.JazzProjectArea;
 import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.credentialStore.CredentialAttributesKt;
 import com.intellij.credentialStore.Credentials;
@@ -11,12 +12,15 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 @State(name = "jazz", storages = {@Storage("jazz.xml")})
 public class SettingsBean implements PersistentStateComponent<SettingsBean> {
 
     private String url;
     private String username;
     private String projectArea;
+    private List<JazzProjectArea> projectAreas;
     private String LScmPath;
 
     public String getUrl() {
@@ -41,6 +45,14 @@ public class SettingsBean implements PersistentStateComponent<SettingsBean> {
 
     public void setProjectArea(String projectArea) {
         this.projectArea = projectArea;
+    }
+
+    public void setProjectAreas(List<JazzProjectArea> projectAreas) {
+        this.projectAreas = projectAreas;
+    }
+
+    public List<JazzProjectArea> getProjectAreas() {
+        return projectAreas;
     }
 
     @Nullable

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.nio.file.InvalidPathException;
+import java.util.List;
 
 public class SettingsForm implements Configurable {
     private JTextField url;
@@ -25,6 +26,7 @@ public class SettingsForm implements Configurable {
     private JTextField lscm;
     private JTextPane messages;
     private JButton browseButton;
+    private List<JazzProjectArea> projectAreas;
 
     @Nls(capitalization = Nls.Capitalization.Title)
     @Override
@@ -39,22 +41,28 @@ public class SettingsForm implements Configurable {
         url.setText(bean.getUrl());
         username.setText(bean.getUsername());
         password.setText(bean.getPassword());
-        projectArea.setSelectedItem(bean.getProjectArea());
         lscm.setText(bean.getLScmPath());
         testConnectionButton.addActionListener(event -> test());
-        browseButton.addActionListener(event -> browse());
+        browseButton.addActionListener(event -> refreshProjectAreas());
+        if (bean.getProjectAreas() != null) {
+            bean.getProjectAreas().stream().
+                    map(JazzProjectArea::getName).
+                    forEach(i -> projectArea.addItem(i));
+            projectArea.setSelectedItem(bean.getProjectArea());
+        }
         return panel;
     }
 
-    private void browse() {
+    private void refreshProjectAreas() {
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
             try {
                 updateMessage("listing project areas...");
-                JazzProjectAreaList projectAreas = JazzService.getInstance().listProjectAreas();
+                JazzProjectAreaList projectAreasList = JazzService.getInstance().listProjectAreas();
                 projectArea.removeAllItems();
-                projectAreas.getProjectAreas().stream().
+                projectAreasList.getProjectAreas().stream().
                         map(JazzProjectArea::getName).
                         forEach(i->projectArea.addItem(i));
+                SettingsForm.this.projectAreas = projectAreasList.getProjectAreas();
                 updateMessage("project areas fetched!");
             } catch (InvalidPathException | JazzServiceException e) {
                 updateMessage(e.getMessage(), true);
@@ -100,6 +108,8 @@ public class SettingsForm implements Configurable {
             return true;
         } else if (projectArea.getSelectedItem() != null && !projectArea.getSelectedItem().equals(bean.getProjectArea())) {
             return true;
+        } else if (projectAreas != null && !projectAreas.equals(bean.getProjectAreas())) {
+            return true;
         } else if (!lscm.getText().equals(bean.getLScmPath())) {
             return true;
         }
@@ -112,7 +122,8 @@ public class SettingsForm implements Configurable {
         bean.setLScmPath(lscm.getText());
         bean.setUsername(username.getText());
         bean.setUrl(url.getText());
-        bean.setProjectArea(projectArea.getSelectedItem().toString());
+        bean.setProjectArea(projectArea.getSelectedItem() != null ? projectArea.getSelectedItem().toString() : null);
         bean.storePassword(password.getPassword());
+        bean.setProjectAreas(projectAreas);
     }
 }
