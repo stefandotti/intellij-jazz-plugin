@@ -1,15 +1,22 @@
 package at.dotti.intellij.plugins.jazz.service;
 
+import at.dotti.intellij.plugins.jazz.beans.JazzChange;
 import at.dotti.intellij.plugins.jazz.beans.JazzProjectArea;
 import at.dotti.intellij.plugins.jazz.beans.JazzProjectAreaList;
+import at.dotti.intellij.plugins.jazz.beans.JazzStatusObject;
 import at.dotti.intellij.plugins.jazz.exceptions.JazzServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.CheckoutProvider;
+import com.intellij.openapi.vcs.FilePath;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -87,5 +94,38 @@ public class JazzService {
 
     public void checkout(Project project, CheckoutProvider.Listener listener) {
 
+    }
+
+    public JazzStatusObject status(@NotNull Project project) throws JazzServiceException {
+        String json = JazzServiceExecutor.getInstance().execute(project.getBasePath(), true, "show", "status");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(json, JazzStatusObject.class);
+        } catch (IOException e) {
+            throw new JazzServiceException(e);
+        }
+    }
+
+    public JazzStatusObject status(FilePath filePath) throws JazzServiceException {
+        String json = JazzServiceExecutor.getInstance().execute(filePath.getPath(), true, "show", "status");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(json, JazzStatusObject.class);
+        } catch (IOException e) {
+            throw new JazzServiceException(e);
+        }
+    }
+
+    public String getContent(FilePath filePath, JazzChange change) throws JazzServiceException {
+        String baseline = "Z-AKT-Release-neu_#12";
+        String component = "Z-AKT";
+        try {
+            File tmpfile = File.createTempFile("bla", "blub");
+            String json = JazzServiceExecutor.getInstance().execute(filePath.getPath(), true, "get", "file", "-o", "-b", baseline, "-c", component, "-f", change.getPath(), tmpfile.getAbsolutePath());
+            return FileUtils.readFileToString(tmpfile, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
