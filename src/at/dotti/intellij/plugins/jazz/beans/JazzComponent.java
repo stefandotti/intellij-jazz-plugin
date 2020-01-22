@@ -54,6 +54,10 @@ public class JazzComponent {
         return name;
     }
 
+    public boolean isCompLoaded() {
+        return isCompLoaded;
+    }
+
     public List<JazzChange> getUnresolved() {
         return unresolved;
     }

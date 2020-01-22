@@ -1,7 +1,6 @@
 package at.dotti.intellij.plugins.jazz.vcs;
 
 import at.dotti.intellij.plugins.jazz.beans.JazzChange;
-import at.dotti.intellij.plugins.jazz.beans.JazzStatus;
 import at.dotti.intellij.plugins.jazz.beans.JazzStatusObject;
 import at.dotti.intellij.plugins.jazz.exceptions.JazzServiceException;
 import at.dotti.intellij.plugins.jazz.service.JazzService;
@@ -16,7 +15,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 

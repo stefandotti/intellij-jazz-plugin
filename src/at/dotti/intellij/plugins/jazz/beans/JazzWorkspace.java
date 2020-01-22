@@ -17,6 +17,9 @@ public class JazzWorkspace extends JazzBase {
     public List<JazzChange> getAllChanges() {
         List<JazzChange> changes = new ArrayList<>();
         for (JazzComponent component : this.components) {
+            if  (!component.isCompLoaded()) {
+                continue;
+            }
             component.setWorkspace(this);
             for (JazzChange jazzChange : component.getUnresolved()) {
                 jazzChange.setComponent(component);
