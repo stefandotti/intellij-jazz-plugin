@@ -88,6 +88,7 @@ public class JazzService {
             jazzProjectAreaList.setProjectAreas(Arrays.asList(list));
             return jazzProjectAreaList;
         } catch (IOException e) {
+            System.out.println(json);
             throw new JazzServiceException(e);
         }
     }
@@ -102,6 +103,7 @@ public class JazzService {
         try {
             return mapper.readValue(json, JazzStatusObject.class);
         } catch (IOException e) {
+            System.out.println(json);
             throw new JazzServiceException(e);
         }
     }
@@ -112,17 +114,26 @@ public class JazzService {
         try {
             return mapper.readValue(json, JazzStatusObject.class);
         } catch (IOException e) {
+            System.out.println(json);
             throw new JazzServiceException(e);
         }
     }
 
     public String getContent(FilePath filePath, JazzChange change) throws JazzServiceException {
-        String baseline = "Z-AKT-Release-neu_#12";
-        String component = "Z-AKT";
+        if (!filePath.getIOFile().exists()) {
+            throw new JazzServiceException("file does not exist");
+        }
+        if (filePath.isDirectory()) {
+            throw new JazzServiceException("file is a directory");
+        }
+        String workspace = change.getComponent().getWorkspace().getName();
+        String component = change.getComponent().getName();
         try {
             File tmpfile = File.createTempFile("bla", "blub");
-            String json = JazzServiceExecutor.getInstance().execute(filePath.getPath(), true, "get", "file", "-o", "-b", baseline, "-c", component, "-f", change.getPath(), tmpfile.getAbsolutePath());
-            return FileUtils.readFileToString(tmpfile, StandardCharsets.UTF_8);
+            JazzServiceExecutor.getInstance().execute(filePath.getPath(), true, "get", "file", "-o", "-w", workspace, "-c", component, "-f", change.getPath(), tmpfile.getAbsolutePath());
+            String content = FileUtils.readFileToString(tmpfile, StandardCharsets.UTF_8);
+            Files.delete(tmpfile.toPath());
+            return content;
         } catch (IOException e) {
             e.printStackTrace();
         }

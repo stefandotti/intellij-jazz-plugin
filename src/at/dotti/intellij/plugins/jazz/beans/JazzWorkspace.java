@@ -14,7 +14,15 @@ public class JazzWorkspace extends JazzBase {
     @JsonProperty
     private String type;
 
-    public List<JazzComponent> getComponents() {
-        return components;
+    public List<JazzChange> getAllChanges() {
+        List<JazzChange> changes = new ArrayList<>();
+        for (JazzComponent component : this.components) {
+            component.setWorkspace(this);
+            for (JazzChange jazzChange : component.getUnresolved()) {
+                jazzChange.setComponent(component);
+                changes.add(jazzChange);
+            }
+        }
+        return changes;
     }
 }

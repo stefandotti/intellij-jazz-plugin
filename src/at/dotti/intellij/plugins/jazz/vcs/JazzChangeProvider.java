@@ -1,6 +1,7 @@
 package at.dotti.intellij.plugins.jazz.vcs;
 
 import at.dotti.intellij.plugins.jazz.beans.JazzChange;
+import at.dotti.intellij.plugins.jazz.beans.JazzStatus;
 import at.dotti.intellij.plugins.jazz.beans.JazzStatusObject;
 import at.dotti.intellij.plugins.jazz.exceptions.JazzServiceException;
 import at.dotti.intellij.plugins.jazz.service.JazzService;
@@ -8,17 +9,35 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.FileStatus;
+import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.changes.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class JazzChangeProvider implements ChangeProvider {
     @Override
     public void getChanges(@NotNull VcsDirtyScope vcsDirtyScope, @NotNull ChangelistBuilder changelistBuilder, @NotNull ProgressIndicator progressIndicator, @NotNull ChangeListManagerGate changeListManagerGate) throws VcsException {
+        if (vcsDirtyScope.wasEveryThingDirty()) {
+            try {
+                for (FilePath dir : vcsDirtyScope.getRecursivelyDirtyDirectories()) {
+                    JazzStatusObject status = JazzService.getInstance().status(dir);
+                    List<JazzChange> changes = status.getChanges();
+                    for (JazzChange change : changes) {
+                        String path = dir.getPath() + change.getPath();
+                        LocalFilePath fp = new LocalFilePath(path, new File(path).isDirectory());
+                        updateStatus(fp, vcsDirtyScope.getProject(), changelistBuilder, status);
+                    }
+                }
+            } catch (JazzServiceException e) {
+                e.printStackTrace();
+            }
+        }
         vcsDirtyScope.getDirtyFiles().stream()
                 .filter(filePath -> !filePath.getPath().contains(".jazz"))
                 .forEach(mark(vcsDirtyScope.getProject(), changelistBuilder));

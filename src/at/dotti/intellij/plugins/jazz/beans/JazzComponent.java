@@ -25,6 +25,8 @@ public class JazzComponent {
     private boolean incomingReplacement;
     @JsonProperty("incoming-target-baseline")
     private JazzIncomingTargetBaseline incomingTargetBaseline;
+    @JsonProperty("incoming-baselines")
+    private List<Object> incomingBaselines;
     @JsonProperty("is_comp_loaded")
     private boolean isCompLoaded;
     @JsonProperty
@@ -46,7 +48,21 @@ public class JazzComponent {
     @JsonProperty
     private String uuid;
 
+    private JazzWorkspace workspace;
+
+    public String getName() {
+        return name;
+    }
+
     public List<JazzChange> getUnresolved() {
         return unresolved;
+    }
+
+    public void setWorkspace(JazzWorkspace workspace) {
+        this.workspace = workspace;
+    }
+
+    public JazzWorkspace getWorkspace() {
+        return workspace;
     }
 }

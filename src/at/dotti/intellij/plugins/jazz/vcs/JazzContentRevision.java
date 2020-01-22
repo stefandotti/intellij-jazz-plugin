@@ -9,8 +9,11 @@ import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 public class JazzContentRevision implements ContentRevision {
 
@@ -34,12 +37,15 @@ public class JazzContentRevision implements ContentRevision {
     @Override
     public String getContent() throws VcsException {
         try {
+            if (this.change == null) {
+                return FileUtils.readFileToString(this.filePath.getIOFile(), filePath.getCharset());
+            }
             if (this.revision == VcsRevisionNumber.NULL) {
                 return "no-content";
             } else {
                 return JazzService.getInstance().getContent(this.filePath, this.change);
             }
-        } catch (JazzServiceException e) {
+        } catch (JazzServiceException | IOException e) {
             throw new VcsException(e);
         }
     }

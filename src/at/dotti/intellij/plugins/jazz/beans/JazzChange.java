@@ -11,6 +11,8 @@ public class JazzChange {
     @JsonProperty
     private String uuid;
 
+    private JazzComponent component;
+
     public String getPath() {
         return path;
     }
@@ -21,5 +23,13 @@ public class JazzChange {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public void setComponent(JazzComponent component) {
+        this.component = component;
+    }
+
+    public JazzComponent getComponent() {
+        return component;
     }
 }

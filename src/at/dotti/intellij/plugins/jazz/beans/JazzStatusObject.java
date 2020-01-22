@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class JazzStatusObject {
@@ -17,9 +16,7 @@ public class JazzStatusObject {
 
     public List<JazzChange> getChanges() {
         return workspaces != null ? workspaces.stream()
-                .map(JazzWorkspace::getComponents)
-                .flatMap(List::stream)
-                .map(JazzComponent::getUnresolved)
+                .map(JazzWorkspace::getAllChanges)
                 .flatMap(List::stream)
                 .collect(Collectors.toList()) : new ArrayList<>();
     }
