@@ -14,6 +14,10 @@ public class JazzState {
     private boolean move;
     @JsonProperty("property_change")
     private boolean propertyChange;
+    @JsonProperty("potential_conflict")
+    private boolean potentialConflict;
+    @JsonProperty
+    private boolean conflict;
 
     public JazzStateEnum getState() {
         return JazzStateEnum.valueOf(this);

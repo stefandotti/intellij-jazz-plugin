@@ -21,4 +21,10 @@ public class JazzStatusObject {
                 .collect(Collectors.toList()) : new ArrayList<>();
     }
 
+    public List<JazzOutgoingChange> getOutgoingChange() {
+        return workspaces != null ? workspaces.stream()
+                .map(JazzWorkspace::getAllOutgoingChanges)
+                .flatMap(List::stream)
+                .collect(Collectors.toList()) : new ArrayList<>();
+    }
 }

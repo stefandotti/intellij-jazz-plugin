@@ -14,6 +14,6 @@ public class JazzCheckinHandlerFactory extends VcsCheckinHandlerFactory {
     @NotNull
     @Override
     protected CheckinHandler createVcsHandler(CheckinProjectPanel checkinProjectPanel) {
-        return new JazzCheckinHandler();
+        return new JazzCheckinHandler(checkinProjectPanel);
     }
 }

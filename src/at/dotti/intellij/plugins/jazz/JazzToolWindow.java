@@ -5,10 +5,12 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+
 public class JazzToolWindow implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-
+        JComponent tw = toolWindow.getComponent();
     }
 
     @Override

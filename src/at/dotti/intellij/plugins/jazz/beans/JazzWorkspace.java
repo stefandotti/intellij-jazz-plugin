@@ -13,6 +13,8 @@ public class JazzWorkspace extends JazzBase {
     private JazzFlowTarget flowTarget;
     @JsonProperty
     private String type;
+    @JsonProperty("out-of-sync")
+    private List<JazzOutOfSync> outOfSync;
 
     public List<JazzChange> getAllChanges() {
         List<JazzChange> changes = new ArrayList<>();
@@ -22,6 +24,21 @@ public class JazzWorkspace extends JazzBase {
             }
             component.setWorkspace(this);
             for (JazzChange jazzChange : component.getUnresolved()) {
+                jazzChange.setComponent(component);
+                changes.add(jazzChange);
+            }
+        }
+        return changes;
+    }
+
+    public List<JazzOutgoingChange> getAllOutgoingChanges() {
+        List<JazzOutgoingChange> changes = new ArrayList<>();
+        for (JazzComponent component : this.components) {
+            if  (!component.isCompLoaded()) {
+                continue;
+            }
+            component.setWorkspace(this);
+            for (JazzOutgoingChange jazzChange : component.getOutgoingChanges()) {
                 jazzChange.setComponent(component);
                 changes.add(jazzChange);
             }

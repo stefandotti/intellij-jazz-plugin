@@ -34,7 +34,7 @@ public class JazzComponent {
     @JsonProperty("outgoing-addition")
     private boolean outgoingAddition;
     @JsonProperty("outgoing-changes")
-    private List<Object> outgoingChanges;
+    private List<JazzOutgoingChange> outgoingChanges;
     @JsonProperty("outgoing-deletion")
     private boolean outgoingDeletion;
     @JsonProperty("outgoing-replacement")
@@ -68,5 +68,9 @@ public class JazzComponent {
 
     public JazzWorkspace getWorkspace() {
         return workspace;
+    }
+
+    public List<JazzOutgoingChange> getOutgoingChanges() {
+        return outgoingChanges;
     }
 }

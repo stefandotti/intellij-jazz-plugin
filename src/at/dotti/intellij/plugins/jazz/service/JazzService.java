@@ -1,14 +1,13 @@
 package at.dotti.intellij.plugins.jazz.service;
 
-import at.dotti.intellij.plugins.jazz.beans.JazzChange;
-import at.dotti.intellij.plugins.jazz.beans.JazzProjectArea;
-import at.dotti.intellij.plugins.jazz.beans.JazzProjectAreaList;
-import at.dotti.intellij.plugins.jazz.beans.JazzStatusObject;
+import at.dotti.intellij.plugins.jazz.beans.*;
 import at.dotti.intellij.plugins.jazz.exceptions.JazzServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.CheckoutProvider;
 import com.intellij.openapi.vcs.FilePath;
+import com.intellij.openapi.vcs.changes.Change;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -21,10 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class JazzService {
 
@@ -135,8 +132,18 @@ public class JazzService {
             Files.delete(tmpfile.toPath());
             return content;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new JazzServiceException(e);
         }
-        return "";
+    }
+
+    public String checkin(Project project, List<Change> changes, String commitMessage) throws JazzServiceException {
+        List<String> params = new ArrayList<>();
+        Collections.addAll(params, "checkin", "--comment", commitMessage);
+        params.addAll(changes.stream().map(Change::getVirtualFile).filter(Objects::nonNull).map(VirtualFile::getCanonicalPath).collect(Collectors.toList()));
+        return JazzServiceExecutor.getInstance().execute(project.getBasePath(), true, params.toArray(new String[]{}));
+    }
+
+    public String deliver(Project project, JazzOutgoingChange uuid) throws JazzServiceException {
+        return JazzServiceExecutor.getInstance().execute(project.getBasePath(), true, "deliver", "-c", "--source", uuid.getComponent().getWorkspace().getName(), uuid.getUuid());
     }
 }

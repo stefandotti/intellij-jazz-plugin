@@ -1,6 +1,7 @@
 package at.dotti.intellij.plugins.jazz.vcs;
 
 import at.dotti.intellij.plugins.jazz.beans.JazzChange;
+import at.dotti.intellij.plugins.jazz.beans.JazzOutgoingChange;
 import at.dotti.intellij.plugins.jazz.beans.JazzStatusObject;
 import at.dotti.intellij.plugins.jazz.exceptions.JazzServiceException;
 import at.dotti.intellij.plugins.jazz.service.JazzService;
@@ -10,6 +11,7 @@ import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.VcsException;
+import com.intellij.openapi.vcs.actions.VcsContextFactory;
 import com.intellij.openapi.vcs.changes.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
@@ -25,15 +27,23 @@ public class JazzChangeProvider implements ChangeProvider {
             try {
                 for (FilePath dir : vcsDirtyScope.getRecursivelyDirtyDirectories()) {
                     JazzStatusObject status = JazzService.getInstance().status(dir);
+
+                    // changed files
                     List<JazzChange> changes = status.getChanges();
                     for (JazzChange change : changes) {
                         String path = dir.getPath() + change.getPath();
                         LocalFilePath fp = new LocalFilePath(path, new File(path).isDirectory());
                         updateStatus(fp, vcsDirtyScope.getProject(), changelistBuilder, status);
                     }
+
+                    // checkedin files, waiting for deliver
+                    List<JazzOutgoingChange> ochanges = status.getOutgoingChange();
+                    for (JazzOutgoingChange ochange : ochanges) {
+                        processChange(dir, vcsDirtyScope.getProject(), changelistBuilder, ochange);
+                    }
                 }
             } catch (JazzServiceException e) {
-                e.printStackTrace();
+                throw new VcsException(e);
             }
         }
         vcsDirtyScope.getDirtyFiles().stream()
@@ -48,10 +58,22 @@ public class JazzChangeProvider implements ChangeProvider {
                 .forEach(change -> processChange(filePath, project, changelistBuilder, change));
     }
 
+    private void processChange(FilePath filePath, Project project, ChangelistBuilder changelistBuilder, JazzOutgoingChange change) {
+        for (JazzChange changeChange : change.getChanges()) {
+            String path = filePath.getPath() + changeChange.getPath();
+            LocalFilePath fp = new LocalFilePath(path, new File(path).isDirectory());
+            changelistBuilder.processChangeInList(createChange(fp, changeChange, change), change.getComment(), JazzVcs.getKey());
+        }
+    }
+
+    private Change createChange(FilePath filePath, JazzChange changeChange, JazzOutgoingChange change) {
+        return new JazzCheckedinChange(null, getRevision(filePath), FileStatus.UNKNOWN, changeChange, change);
+    }
+
     private void processChange(FilePath filePath, Project project, ChangelistBuilder changelistBuilder, JazzChange change) {
         switch (change.getState().getState()) {
             case ADD:
-                changelistBuilder.processChangeInList(createChange(null, getRevision(change, filePath), change, FileStatus.ADDED), getChangelist(change), JazzVcs.getKey());
+                changelistBuilder.processChangeInList(createChange(null, getRevision(filePath), change, FileStatus.ADDED), getChangelist(change), JazzVcs.getKey());
                 break;
             case MOVE:
                 changelistBuilder.processChangeInList(createChange(getRevision(change, filePath), getRevision(change, filePath), change, FileStatus.SWITCHED), getChangelist(change), JazzVcs.getKey());
