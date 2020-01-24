@@ -1,5 +1,6 @@
 package at.dotti.intellij.plugins.jazz.vcs;
 
+import at.dotti.intellij.plugins.jazz.settings.SettingsForm;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.*;
@@ -23,6 +24,7 @@ public class JazzVcs extends AbstractVcs {
     private final JazzFileSystemListener jazzFileSystemListener;
     private JazzCheckinEnvironment checkinEnvironment;
     private JazzHistoryProvider historyProvider;
+    private SettingsForm settings;
 
     public JazzVcs(@NotNull Project project, MessageBus bus) {
         super(project, VCS_NAME);
@@ -63,7 +65,10 @@ public class JazzVcs extends AbstractVcs {
 
     @Override
     public Configurable getConfigurable() {
-        return null; // TODO was muss das geliefert werden?
+        if (this.settings == null) {
+            this.settings = new SettingsForm();
+        }
+        return this.settings;
     }
 
     @Nullable

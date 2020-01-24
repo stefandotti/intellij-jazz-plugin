@@ -9,6 +9,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.JBColor;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,7 +62,7 @@ public class SettingsForm implements Configurable {
                 projectArea.removeAllItems();
                 projectAreasList.getProjectAreas().stream().
                         map(JazzProjectArea::getName).
-                        forEach(i->projectArea.addItem(i));
+                        forEach(i -> projectArea.addItem(i));
                 SettingsForm.this.projectAreas = projectAreasList.getProjectAreas();
                 updateMessage("project areas fetched!");
             } catch (InvalidPathException | JazzServiceException e) {
@@ -100,6 +101,7 @@ public class SettingsForm implements Configurable {
     @Override
     public boolean isModified() {
         SettingsBean bean = ServiceManager.getService(SettingsBean.class);
+        // compare stored values
         if (!url.getText().equals(bean.getUrl())) {
             return true;
         } else if (!username.getText().equals(bean.getUsername())) {
