@@ -15,6 +15,7 @@
         <li>0.0.1: my first version</li>
         <li>0.0.3: fixed npe when no settingsbean is present</li>
         <li>0.0.3.1: fixed npe</li>
+        <li>0.0.4: json ignore unknown properties; progress indication on status update</li>
       </ul>
     ]]>
     </change-notes>

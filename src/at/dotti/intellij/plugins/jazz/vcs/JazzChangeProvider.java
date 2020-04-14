@@ -25,15 +25,22 @@ public class JazzChangeProvider implements ChangeProvider {
     public void getChanges(@NotNull VcsDirtyScope vcsDirtyScope, @NotNull ChangelistBuilder changelistBuilder, @NotNull ProgressIndicator progressIndicator, @NotNull ChangeListManagerGate changeListManagerGate) throws VcsException {
         if (vcsDirtyScope.wasEveryThingDirty()) {
             try {
+                progressIndicator.setIndeterminate(true);
                 for (FilePath dir : vcsDirtyScope.getRecursivelyDirtyDirectories()) {
+                    progressIndicator.setText(String.format("getting status for %s", dir.getPath()));
                     JazzStatusObject status = JazzService.getInstance().status(dir);
 
                     // changed files
                     List<JazzChange> changes = status.getChanges();
+                    progressIndicator.setIndeterminate(false);
+                    progressIndicator.setFraction(0);
+                    double delta = 100d / changes.size();
                     for (JazzChange change : changes) {
+                        progressIndicator.setText(String.format("setting status for %s", change.getPath()));
                         String path = dir.getPath() + change.getPath();
                         LocalFilePath fp = new LocalFilePath(path, new File(path).isDirectory());
                         updateStatus(fp, vcsDirtyScope.getProject(), changelistBuilder, status);
+                        progressIndicator.setFraction(progressIndicator.getFraction() + delta);
                     }
 
                     // checkedin files, waiting for deliver

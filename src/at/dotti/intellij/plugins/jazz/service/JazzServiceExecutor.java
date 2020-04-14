@@ -69,6 +69,7 @@ public class JazzServiceExecutor {
             if (error.getBuffer().length() != 0) {
                 throw new JazzServiceException(error.toString());
             }
+            System.out.println(output.toString());
             return output.toString();
         } catch (IOException | InterruptedException e) {
             throw new JazzServiceException(e);

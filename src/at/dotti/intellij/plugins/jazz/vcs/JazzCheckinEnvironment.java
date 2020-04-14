@@ -6,6 +6,7 @@ import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.CommitContext;
+import com.intellij.openapi.vcs.changes.VcsDirtyScopeManager;
 import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +59,7 @@ public class JazzCheckinEnvironment implements CheckinEnvironment {
         }catch(JazzServiceException e) {
             exceptions.add(new VcsException(e));
         }
+        VcsDirtyScopeManager.getInstance(this.vcs.getProject()).markEverythingDirty();
         return exceptions;
     }
 

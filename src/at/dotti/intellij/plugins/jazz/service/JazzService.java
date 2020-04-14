@@ -2,7 +2,9 @@ package at.dotti.intellij.plugins.jazz.service;
 
 import at.dotti.intellij.plugins.jazz.beans.*;
 import at.dotti.intellij.plugins.jazz.exceptions.JazzServiceException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.CheckoutProvider;
 import com.intellij.openapi.vcs.FilePath;
@@ -76,11 +78,15 @@ public class JazzService {
     public synchronized void shutdown() {
     }
 
+    private <T> T map(String jsonString, Class<T> jsonClass) throws IOException {
+        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return mapper.readValue(jsonString, jsonClass);
+    }
+
     public JazzProjectAreaList listProjectAreas() throws JazzServiceException {
         String json = JazzServiceExecutor.getInstance().execute("list", "projectareas");
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            JazzProjectArea[] list = mapper.readValue(json, JazzProjectArea[].class);
+            JazzProjectArea[] list = map(json, JazzProjectArea[].class);
             JazzProjectAreaList jazzProjectAreaList = new JazzProjectAreaList();
             jazzProjectAreaList.setProjectAreas(Arrays.asList(list));
             return jazzProjectAreaList;
@@ -96,9 +102,8 @@ public class JazzService {
 
     public JazzStatusObject status(@NotNull Project project) throws JazzServiceException {
         String json = JazzServiceExecutor.getInstance().execute(project.getBasePath(), true, "show", "status");
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json, JazzStatusObject.class);
+            return map(json, JazzStatusObject.class);
         } catch (IOException e) {
             System.out.println(json);
             throw new JazzServiceException(e);
@@ -107,9 +112,8 @@ public class JazzService {
 
     public JazzStatusObject status(FilePath filePath) throws JazzServiceException {
         String json = JazzServiceExecutor.getInstance().execute(filePath.getPath(), true, "show", "status");
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json, JazzStatusObject.class);
+            return map(json, JazzStatusObject.class);
         } catch (IOException e) {
             System.out.println(json);
             throw new JazzServiceException(e);

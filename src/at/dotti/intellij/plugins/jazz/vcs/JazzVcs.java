@@ -1,8 +1,10 @@
 package at.dotti.intellij.plugins.jazz.vcs;
 
 import at.dotti.intellij.plugins.jazz.settings.SettingsForm;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.ChangeProvider;
 import com.intellij.openapi.vcs.checkin.CheckinEnvironment;

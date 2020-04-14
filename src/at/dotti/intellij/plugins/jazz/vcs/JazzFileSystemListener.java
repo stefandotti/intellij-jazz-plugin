@@ -61,6 +61,6 @@ public class JazzFileSystemListener implements LocalFileOperationsHandler, Dispo
 
     @Override
     public void dispose() {
-
+        this.myLfs.unregisterAuxiliaryFileOperationsHandler(this);
     }
 }
