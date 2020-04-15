@@ -27,4 +27,8 @@ public class JazzStatusObject {
                 .flatMap(List::stream)
                 .collect(Collectors.toList()) : new ArrayList<>();
     }
+
+    public List<JazzWorkspace> getWorkspacesOutOfSync() {
+        return workspaces.stream().filter(JazzWorkspace::isOutOfSync).collect(Collectors.toList());
+    }
 }

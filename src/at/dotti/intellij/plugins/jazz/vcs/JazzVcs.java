@@ -9,6 +9,7 @@ import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.ChangeProvider;
 import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
 import com.intellij.openapi.vcs.history.VcsHistoryProvider;
+import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
 import com.intellij.util.messages.MessageBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,7 @@ public class JazzVcs extends AbstractVcs {
     private JazzCheckinEnvironment checkinEnvironment;
     private JazzHistoryProvider historyProvider;
     private SettingsForm settings;
+    private JazzRollbackEnvironment rollbackEnvironment;
 
     public JazzVcs(@NotNull Project project, MessageBus bus) {
         super(project, VCS_NAME);
@@ -86,6 +88,15 @@ public class JazzVcs extends AbstractVcs {
             this.checkinEnvironment = new JazzCheckinEnvironment(this);
         }
         return this.checkinEnvironment;
+    }
+
+    @Nullable
+    @Override
+    protected RollbackEnvironment createRollbackEnvironment() {
+        if (this.rollbackEnvironment == null) {
+            this.rollbackEnvironment = new JazzRollbackEnvironment(this);
+        }
+        return this.rollbackEnvironment;
     }
 
     @Nullable

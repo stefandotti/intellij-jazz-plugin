@@ -17,4 +17,5 @@ public class JazzGroup extends StandardVcsGroup {
     public String getVcsName(Project project) {
         return JazzVcs.getKey().getName();
     }
+
 }

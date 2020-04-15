@@ -16,6 +16,10 @@ public class JazzWorkspace extends JazzBase {
     @JsonProperty("out-of-sync")
     private List<JazzOutOfSync> outOfSync;
 
+    public boolean isOutOfSync() {
+        return !this.outOfSync.isEmpty();
+    }
+
     public List<JazzChange> getAllChanges() {
         List<JazzChange> changes = new ArrayList<>();
         for (JazzComponent component : this.components) {

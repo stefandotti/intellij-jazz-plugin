@@ -42,7 +42,7 @@ public class JazzServiceExecutor {
             List<String> parameter = new ArrayList<>();
             Collections.addAll(parameter, bean.getLScmPath());
             Collections.addAll(parameter, commands);
-            if (!ArrayUtils.contains(commands, "diff") && !ArrayUtils.contains(commands, "get")) {
+            if (!ArrayUtils.contains(commands, "diff") && !ArrayUtils.contains(commands, "get") && !ArrayUtils.contains(commands, "undo")) {
                 Collections.addAll(parameter, "-j");
             }
             if (!withoutLogin) {

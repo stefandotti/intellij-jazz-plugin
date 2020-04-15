@@ -16,6 +16,7 @@
         <li>0.0.3: fixed npe when no settingsbean is present</li>
         <li>0.0.3.1: fixed npe</li>
         <li>0.0.4: json ignore unknown properties; progress indication on status update</li>
+        <li>0.0.5.0: added resync action</li>
       </ul>
     ]]>
     </change-notes>
@@ -60,12 +61,17 @@
 
         <group id="JazzGroup">
             <action id="Jazz.Deliver" class="at.dotti.intellij.plugins.jazz.actions.Deliver"/>
+            <separator/>
+            <action id="Jazz.Resync" class="at.dotti.intellij.plugins.jazz.actions.Resync"/>
             <add-to-group group-id="JazzFilePopupGroup" anchor="last"/>
         </group>
 
-        <reference id="Jazz.Deliver">
-            <add-to-group group-id="ChangesViewPopupMenu" anchor="after" relative-to-action="Diff.ShowDiff"/>
-        </reference>
+<!--        <reference id="Jazz.Deliver">-->
+<!--            <add-to-group group-id="ChangesViewPopupMenu" anchor="after" relative-to-action="Diff.ShowDiff"/>-->
+<!--        </reference>-->
+<!--        <reference id="Jazz.Resync">-->
+<!--            <add-to-group group-id="ChangesViewPopupMenu" anchor="after" relative-to-action="Diff.ShowDiff"/>-->
+<!--        </reference>-->
     </actions>
 
 </idea-plugin>

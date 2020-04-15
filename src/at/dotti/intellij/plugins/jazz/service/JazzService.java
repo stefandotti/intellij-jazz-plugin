@@ -150,4 +150,17 @@ public class JazzService {
     public String deliver(Project project, JazzOutgoingChange uuid) throws JazzServiceException {
         return JazzServiceExecutor.getInstance().execute(project.getBasePath(), true, "deliver", "-c", "--source", uuid.getComponent().getWorkspace().getName(), uuid.getUuid());
     }
+
+    public String revert(Project project, List<Change> changes) throws JazzServiceException {
+        List<String> params = new ArrayList<>();
+        Collections.addAll(params, "undo");
+        params.addAll(changes.stream().map(Change::getVirtualFile).filter(Objects::nonNull).map(VirtualFile::getCanonicalPath).collect(Collectors.toList()));
+        return JazzServiceExecutor.getInstance().execute(project.getBasePath(), true, params.toArray(new String[]{}));
+    }
+
+    public void resync(Project project, JazzWorkspace workspace) throws JazzServiceException {
+        List<String> params = new ArrayList<>();
+        Collections.addAll(params, "load", "--resync", "--allow", workspace.getName());
+        JazzServiceExecutor.getInstance().execute(project.getBasePath(), true, params.toArray(new String[]{}));
+    }
 }

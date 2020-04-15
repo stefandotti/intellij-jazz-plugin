@@ -24,7 +24,7 @@ public class Deliver extends DumbAwareAction {
     public void update(@NotNull AnActionEvent e) {
         Change[] changes = e.getData(VcsDataKeys.CHANGES);
         boolean enabled = changes != null && Arrays.stream(changes).allMatch(c -> c instanceof JazzCheckedinChange);
-        e.getPresentation().setEnabledAndVisible(enabled);
+        e.getPresentation().setEnabled(enabled);
     }
 
     @Override
