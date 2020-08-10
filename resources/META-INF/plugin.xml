@@ -17,6 +17,7 @@
         <li>0.0.3.1: fixed npe</li>
         <li>0.0.4: json ignore unknown properties; progress indication on status update</li>
         <li>0.0.5.0: added resync action</li>
+        <li>0.0.5.1: upgraded to match intellij version 2020.2</li>
       </ul>
     ]]>
     </change-notes>
