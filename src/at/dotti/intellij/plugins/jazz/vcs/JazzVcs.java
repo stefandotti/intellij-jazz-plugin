@@ -1,16 +1,13 @@
 package at.dotti.intellij.plugins.jazz.vcs;
 
 import at.dotti.intellij.plugins.jazz.settings.SettingsForm;
-import com.intellij.openapi.Disposable;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.ChangeProvider;
 import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
 import com.intellij.openapi.vcs.history.VcsHistoryProvider;
 import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
-import com.intellij.util.messages.MessageBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +15,6 @@ public class JazzVcs extends AbstractVcs {
 
     private static final String VCS_NAME = "jazz";
     private static final VcsKey key = createKey(VCS_NAME);
-    private final MessageBus bus;
     private final VcsShowConfirmationOption myAddConfirmation;
     private final VcsShowConfirmationOption myDeleteConfirmation;
     private final VcsShowSettingOption myCheckoutOptions;
@@ -30,9 +26,8 @@ public class JazzVcs extends AbstractVcs {
     private SettingsForm settings;
     private JazzRollbackEnvironment rollbackEnvironment;
 
-    public JazzVcs(@NotNull Project project, MessageBus bus) {
+    public JazzVcs(@NotNull Project project) {
         super(project, VCS_NAME);
-        this.bus = bus;
 
         final ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(project);
         myAddConfirmation = vcsManager.getStandardConfirmation(VcsConfiguration.StandardConfirmation.ADD, this);
@@ -49,7 +44,7 @@ public class JazzVcs extends AbstractVcs {
     }
 
     @Override
-    protected void shutdown() throws VcsException {
+    protected void shutdown() {
     }
 
     @Override

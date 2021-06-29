@@ -7,11 +7,13 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
 
 public class JazzProjectImpl implements JazzProject {
 
     @Override
-    public void projectOpened() {
+    public void runActivity(@NotNull Project project) {
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
             try {
                 JazzService.getInstance().initialize();
@@ -20,10 +22,4 @@ public class JazzProjectImpl implements JazzProject {
             }
         });
     }
-
-    @Override
-    public void projectClosed() {
-        JazzService.getInstance().shutdown();
-    }
-
 }

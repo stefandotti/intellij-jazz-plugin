@@ -2,6 +2,8 @@ package at.dotti.intellij.plugins.jazz.vcs;
 
 import at.dotti.intellij.plugins.jazz.exceptions.JazzServiceException;
 import at.dotti.intellij.plugins.jazz.service.JazzService;
+import com.intellij.openapi.util.NlsContexts;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.changes.Change;
@@ -34,23 +36,19 @@ public class JazzCheckinEnvironment implements CheckinEnvironment {
         return "Checkin";
     }
 
-    @Nullable
     @Override
-    public List<VcsException> scheduleMissingFileForDeletion(@NotNull List<FilePath> list) {
-        // TODO: delete files from jazz
+    public @Nullable List<VcsException> scheduleMissingFileForDeletion(@NotNull List<? extends FilePath> files) {
+        return null;
+    }
+
+    @Override
+    public @Nullable List<VcsException> scheduleUnversionedFilesForAddition(@NotNull List<? extends VirtualFile> files) {
         return null;
     }
 
     @Nullable
     @Override
-    public List<VcsException> scheduleUnversionedFilesForAddition(@NotNull List<VirtualFile> list) {
-        // TODO: add files to jazz
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public List<VcsException> commit(@NotNull List<Change> changes, @NotNull String commitMessage, @NotNull CommitContext commitContext, @NotNull Set<String> feedback) {
+    public List<VcsException> commit(@NotNull List<? extends Change> changes, @NotNull @NlsSafe String commitMessage, @NotNull CommitContext commitContext, @NotNull Set<? super @NlsContexts.DetailedDescription String> feedback) {
         // TODO: commit files to jazz
         List<VcsException> exceptions = new ArrayList<>();
         try {

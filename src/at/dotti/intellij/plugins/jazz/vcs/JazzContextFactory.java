@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class JazzContextFactory implements VcsContextFactory {
     @NotNull
@@ -38,13 +39,12 @@ public class JazzContextFactory implements VcsContextFactory {
 
     @NotNull
     @Override
-    public FilePath createFilePathOnDeleted(@NotNull File file, boolean b) {
+    public FilePath createFilePathOn(@NotNull File file, boolean b) {
         return null;
     }
 
-    @NotNull
     @Override
-    public FilePath createFilePathOn(@NotNull File file, boolean b) {
+    public @NotNull FilePath createFilePath(@NotNull Path file, boolean isDirectory) {
         return null;
     }
 

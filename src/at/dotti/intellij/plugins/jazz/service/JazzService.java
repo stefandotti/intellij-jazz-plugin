@@ -140,7 +140,7 @@ public class JazzService {
         }
     }
 
-    public String checkin(Project project, List<Change> changes, String commitMessage) throws JazzServiceException {
+    public String checkin(Project project, List<? extends Change> changes, String commitMessage) throws JazzServiceException {
         List<String> params = new ArrayList<>();
         Collections.addAll(params, "checkin", "--comment", commitMessage);
         params.addAll(changes.stream().map(Change::getVirtualFile).filter(Objects::nonNull).map(VirtualFile::getCanonicalPath).collect(Collectors.toList()));
@@ -151,7 +151,7 @@ public class JazzService {
         return JazzServiceExecutor.getInstance().execute(project.getBasePath(), true, "deliver", "-c", "--source", uuid.getComponent().getWorkspace().getName(), uuid.getUuid());
     }
 
-    public String revert(Project project, List<Change> changes) throws JazzServiceException {
+    public String revert(Project project, List<? extends Change> changes) throws JazzServiceException {
         List<String> params = new ArrayList<>();
         Collections.addAll(params, "undo");
         params.addAll(changes.stream().map(Change::getVirtualFile).filter(Objects::nonNull).map(VirtualFile::getCanonicalPath).collect(Collectors.toList()));

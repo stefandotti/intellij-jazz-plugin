@@ -29,22 +29,22 @@ public class JazzRollbackEnvironment implements RollbackEnvironment {
     }
 
     @Override
-    public void rollbackChanges(List<Change> changes, List<VcsException> exceptions, @NotNull RollbackProgressListener rollbackProgressListener) {
+    public void rollbackChanges(List<? extends Change> changes, List<VcsException> vcsExceptions, @NotNull RollbackProgressListener listener) {
         try {
             String json = JazzService.getInstance().revert(this.vcs.getProject(), changes);
         }catch(JazzServiceException e) {
-            exceptions.add(new VcsException(e));
+            vcsExceptions.add(new VcsException(e));
         }
         VcsDirtyScopeManager.getInstance(this.vcs.getProject()).markEverythingDirty();
     }
 
     @Override
-    public void rollbackMissingFileDeletion(List<FilePath> list, List<VcsException> list1, RollbackProgressListener rollbackProgressListener) {
+    public void rollbackMissingFileDeletion(List<? extends FilePath> files, List<? super VcsException> exceptions, RollbackProgressListener listener) {
 
     }
 
     @Override
-    public void rollbackModifiedWithoutCheckout(List<VirtualFile> list, List<VcsException> list1, RollbackProgressListener rollbackProgressListener) {
+    public void rollbackModifiedWithoutCheckout(List<? extends VirtualFile> files, List<? super VcsException> exceptions, RollbackProgressListener listener) {
 
     }
 

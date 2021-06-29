@@ -19,12 +19,13 @@
         <li>0.0.5.0: added resync action</li>
         <li>0.0.5.1: upgraded to match intellij version 2020.2</li>
         <li>0.0.5.3: changed the name to Jazz only
+        <li>0.0.6.0: make the plugin compatible with 203.5419.21 until 211.*
       </ul>
     ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="173.0"/>
+    <idea-version since-build="203.5419.21"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -32,25 +33,22 @@
 
     <resource-bundle>messages.JazzBundle</resource-bundle>
 
-    <project-components>
-        <component>
-            <interface-class>at.dotti.intellij.plugins.jazz.project.JazzProject</interface-class>
-            <implementation-class>at.dotti.intellij.plugins.jazz.project.JazzProjectImpl</implementation-class>
-        </component>
-        <component>
-            <interface-class>com.intellij.openapi.vcs.actions.VcsContextFactory</interface-class>
-            <implementation-class>at.dotti.intellij.plugins.jazz.vcs.JazzContextFactory</implementation-class>
-        </component>
-    </project-components>
+<!--    <project-components>-->
+<!--        <component>-->
+<!--            <interface-class>com.intellij.openapi.vcs.actions.VcsContextFactory</interface-class>-->
+<!--            <implementation-class>at.dotti.intellij.plugins.jazz.vcs.JazzContextFactory</implementation-class>-->
+<!--        </component>-->
+<!--    </project-components>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <postStartupActivity implementation="at.dotti.intellij.plugins.jazz.project.JazzProjectImpl" />
         <applicationService serviceImplementation="at.dotti.intellij.plugins.jazz.settings.SettingsBean"/>
         <applicationConfigurable instance="at.dotti.intellij.plugins.jazz.settings.SettingsForm"
                                  groupId="tools"
         />
         <vcs name="jazz" vcsClass="at.dotti.intellij.plugins.jazz.vcs.JazzVcs" displayName="Jazz"
-             administrativeAreaName=".jazz5, .jazzShed"/>
+             administrativeAreaName=".jazz5, .jazzShed" areChildrenValidMappings="true"/>
         <checkoutProvider implementation="at.dotti.intellij.plugins.jazz.vcs.JazzCheckoutProvider"/>
         <vcsCheckinHandlerFactory implementation="at.dotti.intellij.plugins.jazz.vcs.JazzCheckinHandlerFactory"/>
     </extensions>
