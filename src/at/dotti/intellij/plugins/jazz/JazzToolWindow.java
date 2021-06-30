@@ -23,8 +23,4 @@ public class JazzToolWindow implements ToolWindowFactory {
         return false;
     }
 
-    @Override
-    public boolean isDoNotActivateOnStart() {
-        return false;
-    }
 }

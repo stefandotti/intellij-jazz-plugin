@@ -33,13 +33,6 @@
 
     <resource-bundle>messages.JazzBundle</resource-bundle>
 
-<!--    <project-components>-->
-<!--        <component>-->
-<!--            <interface-class>com.intellij.openapi.vcs.actions.VcsContextFactory</interface-class>-->
-<!--            <implementation-class>at.dotti.intellij.plugins.jazz.vcs.JazzContextFactory</implementation-class>-->
-<!--        </component>-->
-<!--    </project-components>-->
-
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <postStartupActivity implementation="at.dotti.intellij.plugins.jazz.project.JazzProjectImpl" />
