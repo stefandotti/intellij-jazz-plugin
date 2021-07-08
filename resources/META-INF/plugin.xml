@@ -22,6 +22,7 @@
         <li>0.0.6.0: make the plugin compatible with 203.5419.21 until 211.*
         <li>0.0.7.0: add workspace panel
         <li>0.0.7.1: changed until version to 211.* as they are only bugfixes
+        <li>0.0.7.2: changed workspace information panel to non blocking when fetching status
       </ul>
     ]]>
     </change-notes>

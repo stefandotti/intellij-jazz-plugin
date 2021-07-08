@@ -26,11 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import static at.dotti.intellij.plugins.jazz.vcs.JazzBundle.message;
 import static com.intellij.notification.NotificationAction.createSimpleExpiring;
@@ -54,6 +49,7 @@ public class WorkspacePanel extends SimpleToolWindowPanel {
     String HELP_ID = "reference.vcs.jazz.working.copies.information";
 
     private JazzStatusObject jazzStatus;
+    private WorkspaceTreeModel model;
 
     public WorkspacePanel(@NotNull Project project) {
         super(false, true);
@@ -67,7 +63,16 @@ public class WorkspacePanel extends SimpleToolWindowPanel {
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(TOOLBAR_PLACE, toolbarGroup, false);
         setToolbar(toolbar.getComponent());
 
-        rootsReloaded(true);
+        WorkspaceInfoPanel infoPanel = new WorkspaceInfoPanel();
+        this.model = (WorkspaceTreeModel) infoPanel.getModel();
+        infoPanel.setFocusable(true);
+        infoPanel.setBorder(null);
+
+        ActionGroup group = (ActionGroup) ActionManager.getInstance().getAction("Jazz.WorkspaceView.Popup");
+        infoPanel.setComponentPopupMenu(ActionManager.getInstance().createActionPopupMenu(POPUP_GROUP, group).getComponent());
+
+        myPanel.add(infoPanel);
+
         refresh();
     }
 
@@ -97,19 +102,21 @@ public class WorkspacePanel extends SimpleToolWindowPanel {
     }
 
     private void doRefresh() {
-        getApplication().invokeLater(() -> setWorkspace(), ModalityState.NON_MODAL);
+        getApplication().invokeLater(this::setWorkspace, ModalityState.NON_MODAL);
     }
 
     @RequiresEdt
     private void setWorkspace() {
         isRefreshing = false;
-        try {
-            jazzStatus = JazzService.getInstance().status(this.myProject);
-        } catch (JazzServiceException e) {
-            LOG.error(e);
-            return;
-        }
-        updateList();
+        getApplication().executeOnPooledThread(() -> {
+            try {
+                jazzStatus = JazzService.getInstance().status(myProject);
+                this.model.setStatus(jazzStatus);
+            } catch (JazzServiceException e) {
+                showErrorNotification(true);
+                LOG.error(e);
+            }
+        });
     }
 
     private void rootsReloaded(boolean rootsChanged) {
@@ -122,22 +129,6 @@ public class WorkspacePanel extends SimpleToolWindowPanel {
         } else {
             getApplication().invokeLater(() -> isRefreshing = false, ModalityState.NON_MODAL);
         }
-    }
-
-    private void updateList() {
-        myPanel.removeAll();
-
-        WorkspaceInfoPanel infoPanel = new WorkspaceInfoPanel(this.jazzStatus);
-        infoPanel.setFocusable(true);
-        infoPanel.setBorder(null);
-
-        ActionGroup group = (ActionGroup) ActionManager.getInstance().getAction("Jazz.WorkspaceView.Popup");
-        infoPanel.setComponentPopupMenu(ActionManager.getInstance().createActionPopupMenu(POPUP_GROUP, group).getComponent());
-
-        myPanel.add(infoPanel);
-
-        myPanel.revalidate();
-        myPanel.repaint();
     }
 
     private void showErrorNotification(boolean hasErrors) {

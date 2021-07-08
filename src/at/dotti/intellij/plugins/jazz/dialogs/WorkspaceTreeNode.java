@@ -7,10 +7,17 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class WorkspaceTreeNode extends DefaultMutableTreeNode {
 
-    public WorkspaceTreeNode(JazzStatusObject status) {
+    public WorkspaceTreeNode() {
+        super(JazzBundle.message("jazz.status.loading"));
+    }
+
+    public void setStatus(JazzStatusObject status) {
+        this.removeAllChildren();
+        this.setUserObject(JazzBundle.message("jazz.status.loading"));
         for (JazzWorkspace workspace : status.getWorkspaces()) {
             this.add(new WorkspaceTreeNode(workspace));
         }
+        this.setUserObject(null);
     }
 
     public WorkspaceTreeNode(JazzWorkspace workspace) {
