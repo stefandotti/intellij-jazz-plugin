@@ -31,4 +31,8 @@ public class JazzStatusObject {
     public List<JazzWorkspace> getWorkspacesOutOfSync() {
         return workspaces.stream().filter(JazzWorkspace::isOutOfSync).collect(Collectors.toList());
     }
+
+    public List<JazzWorkspace> getWorkspaces() {
+        return workspaces;
+    }
 }

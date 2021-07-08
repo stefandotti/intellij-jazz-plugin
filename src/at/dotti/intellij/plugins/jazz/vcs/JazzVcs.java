@@ -8,13 +8,18 @@ import com.intellij.openapi.vcs.changes.ChangeProvider;
 import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
 import com.intellij.openapi.vcs.history.VcsHistoryProvider;
 import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
+import com.intellij.util.Consumer;
+import com.intellij.util.messages.Topic;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class JazzVcs extends AbstractVcs {
 
-    private static final String VCS_NAME = "jazz";
+    public static final String VCS_NAME = "jazz";
+    public static final Topic<? super Consumer<Boolean>> ROOTS_RELOADED = new Topic<>("ROOTS_RELOADED", Consumer.class);
+
     private static final VcsKey key = createKey(VCS_NAME);
+
     private final VcsShowConfirmationOption myAddConfirmation;
     private final VcsShowConfirmationOption myDeleteConfirmation;
     private final VcsShowSettingOption myCheckoutOptions;

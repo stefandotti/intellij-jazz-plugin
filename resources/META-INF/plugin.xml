@@ -20,6 +20,8 @@
         <li>0.0.5.1: upgraded to match intellij version 2020.2</li>
         <li>0.0.5.3: changed the name to Jazz only
         <li>0.0.6.0: make the plugin compatible with 203.5419.21 until 211.*
+        <li>0.0.7.0: add workspace panel
+        <li>0.0.7.1: changed until version to 211.* as they are only bugfixes
       </ul>
     ]]>
     </change-notes>
@@ -44,9 +46,22 @@
              administrativeAreaName=".jazz5, .jazzShed" areChildrenValidMappings="true"/>
         <checkoutProvider implementation="at.dotti.intellij.plugins.jazz.vcs.JazzCheckoutProvider"/>
         <vcsCheckinHandlerFactory implementation="at.dotti.intellij.plugins.jazz.vcs.JazzCheckinHandlerFactory"/>
+        <changesViewContent tabName="Jazz Workspace Information"
+                            className="at.dotti.intellij.plugins.jazz.vcs.JazzWorkspaceContent"
+                            predicateClassName="at.dotti.intellij.plugins.jazz.vcs.JazzWorkspaceContent$VisibilityPredicate"
+                            displayNameSupplierClassName="at.dotti.intellij.plugins.jazz.vcs.JazzWorkspaceContent$DisplayNameSupplier" />
+        <notificationGroup displayType="BALLOON" id="Jazz Notification Group" key="jazz.notification.group.name" />
     </extensions>
 
     <actions>
+        <group id="Jazz.WorkspaceView.Popup" popup="true"/>
+        <group id="Jazz.WorkspaceView.Toolbar">
+            <action id="Jazz.RefreshWorkspace" class="at.dotti.intellij.plugins.jazz.dialogs.RefreshWorkspaceAction"
+                    icon="AllIcons.Actions.Refresh" use-shortcut-of="Refresh">
+                <add-to-group group-id="Jazz.WorkspaceView.Popup" />
+            </action>
+        </group>
+
         <group id="JazzFilePopupGroup" popup="true" class="at.dotti.intellij.plugins.jazz.actions.JazzGroup">
             <add-to-group group-id="VcsGroup" anchor="last"/>
             <add-to-group group-id="VcsGlobalGroup" anchor="after" relative-to-action="Vcs.Specific"/>

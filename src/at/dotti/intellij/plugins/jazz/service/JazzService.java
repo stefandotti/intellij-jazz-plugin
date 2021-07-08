@@ -79,7 +79,7 @@ public class JazzService {
     }
 
     private <T> T map(String jsonString, Class<T> jsonClass) throws IOException {
-        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         return mapper.readValue(jsonString, jsonClass);
     }
 

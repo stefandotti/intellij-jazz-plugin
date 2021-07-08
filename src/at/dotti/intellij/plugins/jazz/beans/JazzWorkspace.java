@@ -17,7 +17,7 @@ public class JazzWorkspace extends JazzBase {
     private List<JazzOutOfSync> outOfSync;
 
     public boolean isOutOfSync() {
-        return !this.outOfSync.isEmpty();
+        return outOfSync != null && !this.outOfSync.isEmpty();
     }
 
     public List<JazzChange> getAllChanges() {
@@ -48,5 +48,24 @@ public class JazzWorkspace extends JazzBase {
             }
         }
         return changes;
+    }
+
+    public List<JazzIncomingChange> getAllIncomingChanges() {
+        List<JazzIncomingChange> changes = new ArrayList<>();
+        for (JazzComponent component : this.components) {
+            if  (!component.isCompLoaded()) {
+                continue;
+            }
+            component.setWorkspace(this);
+            for (JazzIncomingChange jazzChange : component.getIncomingChanges()) {
+                jazzChange.setComponent(component);
+                changes.add(jazzChange);
+            }
+        }
+        return changes;
+    }
+
+    public List<JazzComponent> getComponents() {
+        return components;
     }
 }

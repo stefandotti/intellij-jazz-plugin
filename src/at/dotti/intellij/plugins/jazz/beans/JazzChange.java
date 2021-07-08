@@ -18,6 +18,8 @@ public class JazzChange {
     private String stateId;
     @JsonProperty
     private String uuid;
+    @JsonProperty("before-state")
+    private String beforeState;
 
     private JazzComponent component;
 

@@ -18,7 +18,7 @@ public class JazzComponent {
     @JsonProperty("incoming-addition")
     private boolean incomingAddition;
     @JsonProperty("incoming-changes")
-    private List<Object> incomingChanges;
+    private List<JazzIncomingChange> incomingChanges;
     @JsonProperty("incoming-deletion")
     private boolean incomingDeletion;
     @JsonProperty("incoming-replacement")
@@ -45,6 +45,8 @@ public class JazzComponent {
     private String type;
     @JsonProperty
     private List<JazzChange> unresolved = new ArrayList<>();
+    @JsonProperty("local-conflicts")
+    private List<Object> localConflicts;
     @JsonProperty
     private String uuid;
 
@@ -72,5 +74,9 @@ public class JazzComponent {
 
     public List<JazzOutgoingChange> getOutgoingChanges() {
         return outgoingChanges;
+    }
+
+    public List<JazzIncomingChange> getIncomingChanges() {
+        return incomingChanges;
     }
 }
